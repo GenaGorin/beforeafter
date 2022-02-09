@@ -82,7 +82,7 @@ function SingleAnswer({answer}: TSingleAnswer) {
             <Text
               style={{
                 fontSize: 14,
-                color: '#6997d3',
+                color: '#2d2d2f',
                 marginTop: 3,
                 marginLeft: 3,
               }}>

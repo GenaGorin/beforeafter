@@ -25,8 +25,8 @@ import Subs from './screens/Subs';
 import Doned from './screens/Doned';
 import Profile from './screens/Profile';
 import {setToken} from './screens/api/api';
-import {getUserData} from './screens/redux/actions';
-import {ActivityIndicator} from 'react-native';
+import {checkVersion, getUserData} from './screens/redux/actions';
+import {ActivityIndicator, Text, View} from 'react-native';
 import Settings from './screens/Settings';
 import FollowersScreen from './screens/FollowersScreen';
 import IFollowScreen from './screens/IFolllowScreen';
@@ -36,6 +36,8 @@ import Goal from './screens/Goal';
 import CreateStage from './screens/CreateStage';
 import GoalComments from './screens/GoalComments';
 import Authors from './screens/Authors';
+import Search from './screens/Search';
+import Banned from './screens/Banned';
 
 type RootStackParamList = {
   Main: undefined;
@@ -55,6 +57,7 @@ type RootStackParamList = {
   CreateStage: {goalId: number};
   GoalComments: {goalId: number};
   Authors: undefined;
+  Search: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -62,8 +65,11 @@ const Stack = createStackNavigator<RootStackParamList>();
 const AppScreens = () => {
   let token = useSelector((state: any) => state.user.user.access_token);
   const dispatch = useDispatch();
+  let isBanned = useSelector((state: any) => state.user.user.is_banned);
+  const CLIENT_VERSION = '1.0';
 
   const [loaded, setLoaded] = useState(false);
+  const [currentVersion, setCurrentVersion] = useState<any>();
 
   useEffect(() => {
     if (token) {
@@ -73,33 +79,50 @@ const AppScreens = () => {
     } else {
       setLoaded(true);
     }
+    checkVersion(setCurrentVersion);
   }, [token]);
+
+  if (currentVersion) {
+    if (currentVersion?.app_version !== CLIENT_VERSION) {
+      return (
+        <View style={{backgroundColor: '#fff', padding: 20}}>
+          <Text>Пожалуйста обновите приложение</Text>
+        </View>
+      );
+    }
+  }
+
   return loaded ? (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}>
-        <Stack.Screen name="Main" component={Main} />
-        <Stack.Screen name="Popular" component={Popular} />
-        <Stack.Screen name="Subs" component={Subs} />
-        <Stack.Screen name="Doned" component={Doned} />
-        <Stack.Screen name="CreateGoal" component={CreateGoal} />
-        <Stack.Screen name="MyProfile" component={MyProfile} />
-        <Stack.Screen name="Contacts" component={Contacts} />
-        <Stack.Screen name="Profile" component={Profile} />
-        <Stack.Screen name="Settings" component={Settings} />
-        <Stack.Screen name="FollowersScreen" component={FollowersScreen} />
-        <Stack.Screen name="IFollowScreen" component={IFollowScreen} />
-        <Stack.Screen name="AboutProfile" component={AboutProfile} />
-        <Stack.Screen name="GoalByTag" component={GoalByTag} />
-        <Stack.Screen name="Goal" component={Goal} />
-        <Stack.Screen name="CreateStage" component={CreateStage} />
-        <Stack.Screen name="GoalComments" component={GoalComments} />
-        <Stack.Screen name="Authors" component={Authors} />
-      </Stack.Navigator>
-      <Footer />
-    </NavigationContainer>
+    isBanned ? (
+      <Banned />
+    ) : (
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}>
+          <Stack.Screen name="Main" component={Main} />
+          <Stack.Screen name="Popular" component={Popular} />
+          <Stack.Screen name="Subs" component={Subs} />
+          <Stack.Screen name="Doned" component={Doned} />
+          <Stack.Screen name="CreateGoal" component={CreateGoal} />
+          <Stack.Screen name="MyProfile" component={MyProfile} />
+          <Stack.Screen name="Contacts" component={Contacts} />
+          <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="Settings" component={Settings} />
+          <Stack.Screen name="FollowersScreen" component={FollowersScreen} />
+          <Stack.Screen name="IFollowScreen" component={IFollowScreen} />
+          <Stack.Screen name="AboutProfile" component={AboutProfile} />
+          <Stack.Screen name="GoalByTag" component={GoalByTag} />
+          <Stack.Screen name="Goal" component={Goal} />
+          <Stack.Screen name="CreateStage" component={CreateStage} />
+          <Stack.Screen name="GoalComments" component={GoalComments} />
+          <Stack.Screen name="Authors" component={Authors} />
+          <Stack.Screen name="Search" component={Search} />
+        </Stack.Navigator>
+        <Footer />
+      </NavigationContainer>
+    )
   ) : (
     <ActivityIndicator />
   );

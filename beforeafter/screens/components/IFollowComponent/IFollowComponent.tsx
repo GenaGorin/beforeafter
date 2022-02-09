@@ -10,8 +10,6 @@ type TFollowersComponent = {
 
 function IFollowComponent({userId, withUnsubscribe}: TFollowersComponent) {
   const [userIds, setUserIds] = useState<any>([]);
-  const [offset, setOffset] = useState(0);
-
   const setFollowers = (data: any) => {
     let newIds = [...userIds, ...data];
 
@@ -19,12 +17,11 @@ function IFollowComponent({userId, withUnsubscribe}: TFollowersComponent) {
   };
 
   useEffect(() => {
-    getMysubs(userId, offset, setFollowers);
+    getMysubs(userId, 0, setFollowers);
   }, []);
 
   const setNextFetchPortion = () => {
-    setOffset(offset + 10);
-    getMysubs(offset + 10);
+    getMysubs(userId, userIds.length, setFollowers);
   };
   return userIds.length > 0 ? (
     <FlatList

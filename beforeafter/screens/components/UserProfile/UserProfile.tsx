@@ -149,9 +149,13 @@ const Goal = ({goal}: any) => {
       style={{marginBottom: 30}}>
       <View style={MyProfileStyles.singleGoalWrapp}>
         <View style={{width: '90%'}}>
-          <Text style={MyProfileStyles.singleGoalTitle}>{goal.title}</Text>
+          <Text style={MyProfileStyles.singleGoalTitle}>
+            {goal.title?.substr(0, 25)}
+            {goal.title.length > 25 && '...'}
+          </Text>
           <Text style={MyProfileStyles.singleGoalDesc}>
-            {goal?.description}
+            {goal?.description?.substr(0, 80)}
+            {goal?.description?.length > 80 && '...'}
           </Text>
         </View>
         <Image

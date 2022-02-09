@@ -2,7 +2,9 @@ import * as axios from 'axios';
 
 const samuraiApi = axios.create({
   // withCredentials: true,
-  baseURL: 'http://x98736zu.beget.tech/web/api/',
+  //baseURL: 'http://x98736zu.beget.tech/web/api/',
+  //baseURL: 'http://api/api',
+  baseURL: 'https://bfrandftr.ru/web/api/',
 });
 
 export const setToken = token => {
@@ -208,5 +210,39 @@ export const testApi = {
   },
   getContacts() {
     return samuraiApi.get('/contacts/getcontacts');
+  },
+  searchGoals(search) {
+    let data = {
+      search: search,
+    };
+    return samuraiApi.post('/goals/search', data);
+  },
+  searchTags(search) {
+    let data = {
+      search: search,
+    };
+    return samuraiApi.post('/tags/search', data);
+  },
+  deleteStage(goalId, stageId) {
+    let data = {
+      goal_id: goalId,
+      stage_id: stageId,
+    };
+    return samuraiApi.post('/stages/deletestage', data);
+  },
+  deleteGoal(goalId) {
+    let data = {
+      goal_id: goalId,
+    };
+    return samuraiApi.post('/goals/deletegoal', data);
+  },
+  clickOnContact(contact) {
+    let data = {
+      contact: contact,
+    };
+    return samuraiApi.post('/contacts/upclick', data);
+  },
+  checkVersion() {
+    return samuraiApi.get('/user/checkversion');
   },
 };

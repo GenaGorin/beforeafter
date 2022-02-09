@@ -21,8 +21,6 @@ function AnswersComponent({commentId, count}: TAnswersComponent) {
   }, []);
 
   const loadMoreAnswer = () => {
-    console.log('offset', answers.length);
-
     getAnswers(commentId, answers.length, addAnswers, setLoaded);
   };
 

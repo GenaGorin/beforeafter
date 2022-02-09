@@ -1,12 +1,18 @@
 import moment from 'moment';
 import React, {useState} from 'react';
-import {Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import DatePicker from 'react-native-datepicker';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {useDispatch, useSelector} from 'react-redux';
 import {controls, MyProfileStyles} from '../../../src/styles/styles';
-import {createStage, showAlert} from '../../redux/actions';
-import Alert from '../Alert/Alert';
+import {createStage} from '../../redux/actions';
 import BlueBtn from '../SubscribeBtn/BlueBtn';
 
 type TCreate = {
@@ -75,7 +81,7 @@ function Create({goalId}: TCreate) {
 
   const saveStageClick = () => {
     if (!image || !date || !description) {
-      dispatch(showAlert('Заполните этап'));
+      Alert.alert('Заполните этап');
       return false;
     }
     let workedObg = {

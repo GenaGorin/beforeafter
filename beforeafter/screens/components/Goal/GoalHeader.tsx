@@ -1,6 +1,14 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  ScrollView,
+  Share,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {IGoal} from '../../../interfaces/goal';
 import {IStage} from '../../../interfaces/stage';
@@ -18,6 +26,7 @@ import {singeGoal} from '../../../src/styles/styles';
 import GoalStage from './GoalStage';
 import BlueBtn from '../SubscribeBtn/BlueBtn';
 import CommentComponent from '../SubscribeBtn/CommentComponent';
+import {getDiffDate} from '../../redux/functions';
 
 type TGoalHeader = {
   goalId: number;
@@ -73,15 +82,59 @@ function GoalHeader({goalId, commentsCount}: TGoalHeader) {
     }
   };
 
+  const setCommentModeClick = () => {
+    if (!token) {
+      navigation.navigate('MyProfile');
+    } else {
+      setCommentMode(true);
+    }
+  };
+
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        title: thisGoal[0]?.title,
+        message: 'Зацените цель в Before&After',
+        url: thisStages[0]?.image_url,
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error: any) {
+      Alert.alert(error.message);
+    }
+  };
+
   return (
     <>
       <ScrollView>
         <GoBack />
-        {thisGoal[0]?.user_id ? (
-          <UserGoal userId={thisGoal[0]?.user_id} />
-        ) : (
-          <View></View>
-        )}
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
+          {thisGoal[0]?.user_id ? (
+            <UserGoal userId={thisGoal[0]?.user_id} />
+          ) : (
+            <View></View>
+          )}
+          <TouchableOpacity onPress={onShare}>
+            <Image
+              style={{width: 20, height: 20, marginLeft: 28, marginTop: 3}}
+              source={require('../../../src/images/share.png')}
+            />
+            <Text style={{color: '#2d2d2f', fontSize: 12}}>Поделиться</Text>
+          </TouchableOpacity>
+        </View>
         <View style={singeGoal.likeWrap}>
           <TouchableOpacity style={singeGoal.likeWrapMR} onPress={createLike}>
             <Image
@@ -92,7 +145,7 @@ function GoalHeader({goalId, commentsCount}: TGoalHeader) {
           </TouchableOpacity>
           <View style={singeGoal.likeWrapMR}>
             <Image
-              style={{...singeGoal.likeImg, height: 20, marginTop: 3}}
+              style={{...singeGoal.likeImg, height: 16, marginTop: 6}}
               source={require('../../../src/images/view.png')}
             />
             <Text style={singeGoal.likeText}>{thisGoal[0]?.views}</Text>
@@ -100,7 +153,15 @@ function GoalHeader({goalId, commentsCount}: TGoalHeader) {
         </View>
         <View style={{...singeGoal.dataWtapper, marginTop: 10}}>
           <Text style={singeGoal.blackText}>Создана:</Text>
-          <Text style={singeGoal.blueText}>{thisGoal[0]?.created_at}</Text>
+          <Text style={singeGoal.blueText}>
+            {getDiffDate(thisGoal[0]?.created_at)}
+          </Text>
+        </View>
+        <View style={{...singeGoal.dataWtapper, marginTop: 0}}>
+          <Text style={singeGoal.blackText}>Последнее обновление:</Text>
+          <Text style={singeGoal.blueText}>
+            {getDiffDate(thisGoal[0]?.last_update)}
+          </Text>
         </View>
         <Text style={{...singeGoal.title, marginLeft: 0}}>
           {thisGoal[0]?.title}
@@ -115,7 +176,7 @@ function GoalHeader({goalId, commentsCount}: TGoalHeader) {
             <Text>Пока нет этапов</Text>
           )}
         </View>
-        <BlueBtn callback={() => setCommentMode(true)} text="Комментировать" />
+        <BlueBtn callback={setCommentModeClick} text="Комментировать" />
 
         <TouchableOpacity
           onPress={() => navigation.navigate('GoalComments', {goalId: goalId})}>

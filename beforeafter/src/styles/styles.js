@@ -100,13 +100,15 @@ export const singeGoal = StyleSheet.create({
     marginRight: 10,
   },
   likeImg: {
-    width: 28,
+    width: 25,
     height: 25,
   },
   likeText: {
-    color: '#4d80aa',
-    fontSize: 18,
-    marginLeft: 5,
+    color: '#2d2d2f',
+    fontSize: 16,
+    marginLeft: 4,
+    marginTop: 2,
+    fontWeight: '600',
   },
   stage: {
     width: 120,

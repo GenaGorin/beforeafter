@@ -27,11 +27,7 @@ function GoalCommentsComponent({goalId}: TGoalComments) {
     }
   }, []);
 
-  console.log('thisComments.length', thisComments.length);
-
   const setNextFetchPortion = () => {
-    console.log('called fetch next portion');
-
     dispatch(getComments(goalId, thisComments.length));
   };
 
@@ -49,6 +45,7 @@ function GoalCommentsComponent({goalId}: TGoalComments) {
         />
       ) : (
         <>
+          <GoBack />
           <Text>Нет комментариев</Text>
         </>
       )}

@@ -43,6 +43,14 @@ const SingleComment = ({comment}: TSingleComment) => {
   const [answer, setAnswer] = useState('');
   const [showAnswers, setShowAnswers] = useState(false);
 
+  const setAnswerModeClick = () => {
+    if (!token) {
+      navigation.navigate('MyProfile');
+    } else {
+      setAnswerMode(true);
+    }
+  };
+
   const sendAnswerClick = () => {
     if (!token) {
       navigation.navigate('MyProfile');
@@ -115,14 +123,14 @@ const SingleComment = ({comment}: TSingleComment) => {
               <Text
                 style={{
                   fontSize: 14,
-                  color: '#6997d3',
+                  color: '#2d2d2f',
                   marginTop: 3,
                   marginLeft: 3,
                 }}>
                 {comment.likes}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setAnswerMode(true)}>
+            <TouchableOpacity onPress={setAnswerModeClick}>
               <Text
                 style={{
                   color: '#6997d3',
@@ -146,10 +154,11 @@ const SingleComment = ({comment}: TSingleComment) => {
                 marginTop: 9,
                 marginBottom: 10,
                 padding: 0,
+                width: 220,
               }}>
               <TextInput
                 style={{
-                  width: 250,
+                  width: 170,
                   padding: 0,
                   paddingLeft: 9,
                 }}

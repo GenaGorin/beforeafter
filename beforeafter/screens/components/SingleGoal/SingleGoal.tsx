@@ -1,5 +1,4 @@
 import {useNavigation} from '@react-navigation/native';
-import moment from 'moment';
 import React, {useEffect, useState} from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -15,7 +14,6 @@ import {
 import {getDiffDate} from '../../redux/functions';
 import TagsBlock from '../TagsBlock/TagsBlock';
 import GoalAuthor from './GoalAuthor/GoalAuthor';
-import Stage from './Stage/Stage';
 
 type TSingleGoal = {
   goal: IGoal;
@@ -47,20 +45,33 @@ function SingeGoal({goal}: TSingleGoal) {
       dispatch(setLike(goal.id));
     }
   };
-  let created = moment(goal.created_at);
-  let now = moment();
+
   // 1
   return (
     <View style={singeGoal.mainWrap}>
       <View style={singeGoal.authorWrapper}>
         <GoalAuthor userId={goal.user_id} />
+
         {goal.done ? (
           <Image
-            style={singeGoal.doned}
+            style={{
+              width: 30,
+              height: 30,
+              marginLeft: -3,
+              marginTop: -5,
+            }}
             source={require('../../../src/images/doned.png')}
           />
         ) : (
-          <></>
+          <Image
+            style={{
+              width: 30,
+              height: 30,
+              marginLeft: -3,
+              marginTop: -5,
+            }}
+            source={require('../../../src/images/notDoned.png')}
+          />
         )}
       </View>
       <TouchableOpacity
@@ -84,8 +95,15 @@ function SingeGoal({goal}: TSingleGoal) {
             </Text>
           </View>
         </View>
-        <Text style={singeGoal.title}> {goal.title}</Text>
-        <Text>{goal.description}</Text>
+        <Text style={singeGoal.title}>
+          {' '}
+          {goal.title?.substr(0, 60)}
+          {goal.title?.length > 60 && '...'}
+        </Text>
+        <Text>
+          {goal.description?.substr(0, 200)}
+          {goal.description?.length > 200 && '...'}
+        </Text>
         <View style={singeGoal.stageWrap}>
           {thisStages.map((stage: IStage) => (
             <Image
@@ -116,7 +134,7 @@ function SingeGoal({goal}: TSingleGoal) {
           </View>
           <View style={singeGoal.likeWrapMR}>
             <Image
-              style={{...singeGoal.likeImg, height: 20, marginTop: 3}}
+              style={{...singeGoal.likeImg, height: 16, marginTop: 5}}
               source={require('../../../src/images/view.png')}
             />
             <Text style={singeGoal.likeText}>{goal.views}</Text>

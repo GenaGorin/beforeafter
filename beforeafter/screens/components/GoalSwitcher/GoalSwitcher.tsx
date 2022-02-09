@@ -33,6 +33,9 @@ function GoalSwitcher({active}: TGoalSwitcher) {
           Завершенные
         </Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => setScreen('Search')}>
+        <Text style={active === 'Search' ? navbar.activeIcons : {}}>Поиск</Text>
+      </TouchableOpacity>
     </View>
   );
 }

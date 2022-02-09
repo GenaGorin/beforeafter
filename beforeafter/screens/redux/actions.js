@@ -6,6 +6,8 @@ import {
   AUTH_ME,
   CHANGE_GOAL_STATUS,
   CREATE_POST,
+  DELETE_GOAL,
+  DELETE_STAGE,
   FETCH_POST,
   GET_COMMENTS,
   GET_GOALS,
@@ -88,13 +90,13 @@ export function fetchPosts() {
 export function login(data) {
   return async dispatch => {
     try {
-      //dispatch(showLoader());
+      dispatch(showLoader());
       const response = await testApi.login(data);
       dispatch({
         type: AUTH_ME,
         payload: response.data,
       });
-      //dispatch(hideLoader());
+      dispatch(hideLoader());
     } catch (e) {
       dispatch(showAlert('Ошибка авторизации'));
       dispatch(hideLoader());
@@ -625,6 +627,76 @@ export function getAmbitiousAuthors() {
 export async function getContacts(callback) {
   try {
     const response = await testApi.getContacts();
+    callback(response.data);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function searchGoals(search, callback) {
+  try {
+    const response = await testApi.searchGoals(search);
+    callback(response.data);
+    //callback(response.data);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function searchTags(search, callback) {
+  try {
+    const response = await testApi.searchTags(search);
+    callback(response.data);
+    //callback(response.data);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export function deleteStage(goalId, stageId) {
+  return async dispatch => {
+    try {
+      dispatch(showLoader());
+      testApi.deleteStage(goalId, stageId);
+      dispatch({
+        type: DELETE_STAGE,
+        payload: stageId,
+      });
+      dispatch(hideLoader());
+    } catch (e) {
+      dispatch(showAlert('Ошибка servera'));
+      dispatch(hideLoader());
+    }
+  };
+}
+
+export function deleteGoal(goalId) {
+  return async dispatch => {
+    try {
+      dispatch(showLoader());
+      testApi.deleteGoal(goalId);
+      dispatch({
+        type: DELETE_GOAL,
+        payload: goalId,
+      });
+      dispatch(hideLoader());
+    } catch (e) {
+      dispatch(showAlert('Ошибка servera'));
+      dispatch(hideLoader());
+    }
+  };
+}
+export async function clickContact(contact) {
+  try {
+    await testApi.clickOnContact(contact);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function checkVersion(callback) {
+  try {
+    const response = await testApi.checkVersion();
     callback(response.data);
   } catch (e) {
     console.log(e);

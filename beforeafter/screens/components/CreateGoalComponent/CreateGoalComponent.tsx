@@ -4,6 +4,7 @@ import moment from 'moment';
 import React, {useState} from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Image,
   Text,
   TextInput,
@@ -48,25 +49,32 @@ function CreateGoalComponent() {
           done: false,
         }}
         onSubmit={(fields: any) => {
-          if (doned) {
-            fields.done = 1;
+          if (!fields.title || !fields.description) {
+            Alert.alert('Заполните название и описание');
           } else {
-            fields.done = 0;
-          }
-          fields.created_at = moment().format('YYYY-MM-DD');
-          let tagsArr = fields.tags.split(' ');
+            if (doned) {
+              fields.done = 1;
+            } else {
+              fields.done = 0;
+            }
+            fields.created_at = moment().format('YYYY-MM-DD');
+            let tagsArr = fields.tags.split(' ');
 
-          let newTagsString = '';
-          if (tagsArr.length > 0) {
-            tagsArr.map((tag: string, i: number) => {
-              if (i < 5) {
-                newTagsString = newTagsString + ' ' + tag;
-              }
-            });
-          }
-          fields.tags = newTagsString;
+            let newTagsString = '';
+            if (tagsArr.length > 0) {
+              tagsArr.map((tag: string, i: number) => {
+                if (i < 5) {
+                  newTagsString = newTagsString + ' ' + tag;
+                }
+              });
+            }
+            fields.tags = newTagsString;
+            if (fields.title.length > 250) {
+              fields.title = fields.title.substr(0, 250);
+            }
 
-          dispatch(createGoal(fields, redirect));
+            dispatch(createGoal(fields, redirect));
+          }
         }}>
         {({handleChange, handleBlur, handleSubmit, values}) => (
           <View>

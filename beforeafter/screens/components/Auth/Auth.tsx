@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Button,
   Text,
   TouchableOpacity,
@@ -9,11 +10,11 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {Formik} from 'formik';
 import {TextInput} from 'react-native-gesture-handler';
-import Alert from '../Alert/Alert';
 import {controls} from '../../../src/styles/styles';
 import BlueBtn from '../SubscribeBtn/BlueBtn';
 import GrayBtn from '../SubscribeBtn/GrayBtn';
 import {login, showAlert} from '../../redux/actions';
+import GoBack from '../goBack/GoBack';
 
 type TAuth = {
   setAuth: any;
@@ -25,12 +26,22 @@ function Auth({setAuth}: TAuth) {
   const loading = useSelector((state: any) => state.app.loading);
   const alert = useSelector((state: any) => state.app.alert);
 
+  if (alert) {
+    Alert.alert(alert);
+  }
+
   if (loading) {
     return <ActivityIndicator />;
   }
+  const validateEmail = (email: any) => {
+    return email.match(
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    );
+  };
 
   return (
     <View style={{backgroundColor: '#fff', padding: 20, height: '100%'}}>
+      <GoBack />
       <Text
         style={{
           fontSize: 20,
@@ -47,9 +58,13 @@ function Auth({setAuth}: TAuth) {
         }}
         onSubmit={fields => {
           if (!fields.email || !fields.password) {
-            dispatch(showAlert('Заполните поля'));
+            Alert.alert('Заполните поля');
           } else {
-            dispatch(login(fields));
+            if (validateEmail(fields.email)) {
+              dispatch(login(fields));
+            } else {
+              Alert.alert('Некорректный email');
+            }
           }
         }}>
         {({handleChange, handleBlur, handleSubmit, values}) => (
@@ -84,7 +99,6 @@ function Auth({setAuth}: TAuth) {
           </View>
         )}
       </Formik>
-      {alert && <Alert text={alert} />}
     </View>
   );
 }

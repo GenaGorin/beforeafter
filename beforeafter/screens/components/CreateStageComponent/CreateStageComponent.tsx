@@ -1,9 +1,24 @@
+import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Image, ScrollView, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  ScrollView,
+  Text,
+  View,
+  TouchableOpacity,
+} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {IGoal} from '../../../interfaces/goal';
 import {IStage} from '../../../interfaces/stage';
-import {changeGoalStatus, getGoal, getStages} from '../../redux/actions';
+import {
+  changeGoalStatus,
+  deleteGoal,
+  deleteStage,
+  getGoal,
+  getStages,
+} from '../../redux/actions';
 import GoBack from '../goBack/GoBack';
 import BlueBtn from '../SubscribeBtn/BlueBtn';
 import Create from './Create';
@@ -23,6 +38,7 @@ function CreateStageComponent({goalId}: TCreateStageComponent) {
   let thisStages = stages.filter((stages: IStage) => stages.goal_id === goalId);
 
   const loading = useSelector((state: any) => state.app.loading);
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (thisGoal.length === 0) {
@@ -32,6 +48,22 @@ function CreateStageComponent({goalId}: TCreateStageComponent) {
       dispatch(getStages(goalId));
     }
   }, []);
+
+  const removeGoalAlert = () => {
+    Alert.alert('Удалить цель ?', 'Вы уверены что хотите удалить эту цель?', [
+      {
+        text: 'Нет',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: 'Да', onPress: () => removeGoal()},
+    ]);
+  };
+
+  const removeGoal = () => {
+    dispatch(deleteGoal(thisGoal[0]?.id));
+    navigation.goBack();
+  };
 
   const changeGoalStatusClick = (status: number) => {
     dispatch(changeGoalStatus(goalId, status));
@@ -64,10 +96,73 @@ function CreateStageComponent({goalId}: TCreateStageComponent) {
       ) : (
         <View></View>
       )}
+      <View style={{display: 'flex', flexDirection: 'row'}}>
+        {thisStages.length > 0 ? (
+          <View style={{marginTop: 16, marginRight: 20}}>
+            {thisGoal[0]?.done ? (
+              <TouchableOpacity
+                style={{display: 'flex', flexDirection: 'row'}}
+                onPress={() => changeGoalStatusClick(0)}>
+                <View
+                  style={{
+                    width: 25,
+                    height: 25,
+                    borderRadius: 20,
+                    borderWidth: 2,
+                    borderColor: '#2d2d2f',
+                  }}>
+                  <Image
+                    style={{
+                      width: 35,
+                      height: 35,
+                      marginTop: -7,
+                      marginLeft: -7,
+                    }}
+                    source={require('../../../src/images/galka.png')}
+                  />
+                </View>
+                <Text style={{marginLeft: 7, marginTop: 3}}>
+                  Отменить завершение
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={{display: 'flex', flexDirection: 'row'}}
+                onPress={() => changeGoalStatusClick(1)}>
+                <View
+                  style={{
+                    width: 25,
+                    height: 25,
+                    borderRadius: 20,
+                    borderWidth: 2,
+                    borderColor: '#2d2d2f',
+                  }}></View>
+                <Text style={{marginLeft: 7, marginTop: 3}}>
+                  Завершить цель
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        ) : (
+          <></>
+        )}
+        <TouchableOpacity onPress={removeGoalAlert}>
+          <Text style={{color: '#4d80aa', fontWeight: '600', marginTop: 20}}>
+            Удалить цель
+          </Text>
+        </TouchableOpacity>
+      </View>
       {showCreate ? (
         <Create goalId={goalId} />
       ) : (
-        <View style={{marginTop: 20, marginBottom: 50}}>
+        <View
+          style={{
+            marginTop: 20,
+            marginBottom: 50,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
           <BlueBtn callback={() => setShowCreate(true)} text="Добавить этап" />
         </View>
       )}
@@ -83,6 +178,20 @@ type TStage = {
 };
 
 const Stage = ({stage, iter}: TStage) => {
+  const dispatch = useDispatch();
+  const removeStageClick = () => {
+    Alert.alert('Удалить этап ?', 'Вы уверены что хотите удалить этот этап?', [
+      {
+        text: 'Нет',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: 'Да', onPress: () => removeStageFunc()},
+    ]);
+  };
+  const removeStageFunc = () => {
+    dispatch(deleteStage(stage.goal_id, stage.id));
+  };
   return (
     <View
       style={{
@@ -112,8 +221,21 @@ const Stage = ({stage, iter}: TStage) => {
         />
         <Text style={{fontSize: 12, color: '#4d80aa'}}>{stage.date}</Text>
       </View>
-      <View style={{marginLeft: 16}}>
-        <Text>{stage.description}</Text>
+      <View style={{marginLeft: 16, width: '50%'}}>
+        <Text>{stage.description?.substr(0, 150)}</Text>
+      </View>
+      <View
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <TouchableOpacity onPress={removeStageClick}>
+          <Image
+            style={{width: 20, height: 30}}
+            source={require('../../../src/images/remove.png')}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );

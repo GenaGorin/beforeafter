@@ -64,22 +64,28 @@ function UserGoal({userId}: TUserGoal) {
             ? {uri: thisUsers[0].image_url}
             : require('../../../src/images/image_placeholder.png')
         }></Image>
-      <Text style={{marginTop: 20, marginLeft: 10}}>
-        {thisUsers[0]?.firstname + ' ' + thisUsers[0]?.lastname}
-      </Text>
-      {me?.id === userId ? (
-        <View></View>
-      ) : loaded ? (
-        <View style={{marginTop: 17, marginLeft: 10}}>
-          {subs ? (
-            <SubscribeBtn text="Отписаться" callback={unSubscribeClick} />
-          ) : (
-            <SubscribeBtn text="Подписаться" callback={subscribeClick} />
-          )}
-        </View>
-      ) : (
-        <ActivityIndicator />
-      )}
+      <View>
+        <Text style={{marginTop: 20, marginLeft: 10}}>
+          {thisUsers[0]?.firstname + ' ' + thisUsers[0]?.lastname}
+        </Text>
+        {me?.id && (
+          <>
+            {me?.id === userId ? (
+              <View></View>
+            ) : loaded ? (
+              <View style={{marginTop: 5, marginLeft: 10}}>
+                {subs ? (
+                  <SubscribeBtn text="Отписаться" callback={unSubscribeClick} />
+                ) : (
+                  <SubscribeBtn text="Подписаться" callback={subscribeClick} />
+                )}
+              </View>
+            ) : (
+              <ActivityIndicator />
+            )}
+          </>
+        )}
+      </View>
     </TouchableOpacity>
   );
 }
