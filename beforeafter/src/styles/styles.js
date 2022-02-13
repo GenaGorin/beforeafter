@@ -114,7 +114,6 @@ export const singeGoal = StyleSheet.create({
     width: 120,
     height: 120,
     marginTop: 20,
-    marginBottom: 20,
     marginRight: -50,
   },
   stageWrap: {

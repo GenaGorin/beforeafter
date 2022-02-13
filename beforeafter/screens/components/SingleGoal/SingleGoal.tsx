@@ -105,15 +105,58 @@ function SingeGoal({goal}: TSingleGoal) {
           {goal.description?.length > 200 && '...'}
         </Text>
         <View style={singeGoal.stageWrap}>
-          {thisStages.map((stage: IStage) => (
-            <Image
-              key={stage.id}
-              style={singeGoal.stage}
-              source={{
-                uri: stage.image_url,
-              }}
-            />
-          ))}
+          {thisStages.length < 10 ? (
+            <>
+              {thisStages.map((stage: IStage) => (
+                <View key={stage.id}>
+                  <Image
+                    style={singeGoal.stage}
+                    source={{
+                      uri: stage.image_url,
+                    }}
+                  />
+                  <Text style={{fontSize: 10, color: '#4d80aa'}}>
+                    {getDiffDate(stage.date)}
+                  </Text>
+                </View>
+              ))}
+            </>
+          ) : (
+            <>
+              {thisStages.map((stage: IStage, i: number) => {
+                if (i < 5) {
+                  return (
+                    <View key={stage.id}>
+                      <Image
+                        style={singeGoal.stage}
+                        source={{
+                          uri: stage.image_url,
+                        }}
+                      />
+                      <Text style={{fontSize: 10, color: '#4d80aa'}}>
+                        {getDiffDate(stage.date)}
+                      </Text>
+                    </View>
+                  );
+                }
+                if (i > thisStages.length - 6) {
+                  return (
+                    <View key={stage.id}>
+                      <Image
+                        style={singeGoal.stage}
+                        source={{
+                          uri: stage.image_url,
+                        }}
+                      />
+                      <Text style={{fontSize: 10, color: '#4d80aa'}}>
+                        {getDiffDate(stage.date)}
+                      </Text>
+                    </View>
+                  );
+                }
+              })}
+            </>
+          )}
         </View>
         <View style={singeGoal.likeWrap}>
           <View style={singeGoal.likeWrapMR}>

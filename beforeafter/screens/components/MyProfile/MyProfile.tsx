@@ -29,6 +29,8 @@ const MyProfileHeader = () => {
         path: 'images',
         mediaType: 'photo',
       },
+      maxWidth: 500,
+      maxHeight: 500,
     };
 
     launchCamera(options, (response: any) => {
@@ -58,6 +60,8 @@ const MyProfileHeader = () => {
         path: 'images',
         mediaType: 'photo',
       },
+      maxWidth: 500,
+      maxHeight: 500,
       //includeBase64: true,
     };
 
